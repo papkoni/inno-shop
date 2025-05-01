@@ -1,4 +1,8 @@
+using UserService.Persistence.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddPersistence(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
