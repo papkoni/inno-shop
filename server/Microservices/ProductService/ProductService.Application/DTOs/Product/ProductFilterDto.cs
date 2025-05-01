@@ -1,6 +1,6 @@
-namespace ProductService.Application.Filters;
+namespace ProductService.Application.DTOs.Product;
 
-public class ProductFilter
+public class ProductFilterDto
 {
     public string? Title { get; set; }
     public decimal? MinPrice { get; set; }

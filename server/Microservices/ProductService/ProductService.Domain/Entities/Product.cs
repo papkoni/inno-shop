@@ -14,8 +14,8 @@ public class Product
         Description = description;
         Price = price;
         CreatedByUserId = createdByUserId;
-        IsAvailable = isAvailable;
         CreatedAt = DateTime.UtcNow;
+        IsAvailable = isAvailable;
     }
     
     protected Product() { }

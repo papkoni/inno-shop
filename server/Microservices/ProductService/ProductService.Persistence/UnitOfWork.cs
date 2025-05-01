@@ -7,10 +7,12 @@ public class UnitOfWork: IUnitOfWork
 {
     private readonly ProductServiceDbContext _context;
 
-    public UnitOfWork(ProductServiceDbContext context, IProductRepository productRepository)
+    public UnitOfWork(
+        ProductServiceDbContext context,
+        IProductRepository productRepository)
     {
         _context = context;
-        productRepository = ProductRepository;
+        ProductRepository = productRepository;
     }
 
     public IProductRepository ProductRepository { get; }
