@@ -2,12 +2,12 @@ namespace UserService.Domain.Entities;
 
 public class RefreshToken
 {
-    public RefreshToken(Guid id,
+    public RefreshToken(
         string token, 
         int expiryDate,
         Guid? userId)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Token = token;
         CreatedDate = DateTime.UtcNow;
         ExpiryDate = CreatedDate.AddMinutes(expiryDate);

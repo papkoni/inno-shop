@@ -4,14 +4,14 @@ namespace UserService.Domain.Entities;
 
 public class User
 {
-    public User(Guid id,
+    public User(
         string name,
         string passwordHash,
         string email, 
-        Role role,
+        Role role = Role.User,
         bool isActive = true)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Name = name;
         PasswordHash = passwordHash;
         Email = email;

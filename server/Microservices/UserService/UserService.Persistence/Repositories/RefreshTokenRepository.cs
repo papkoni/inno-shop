@@ -4,11 +4,11 @@ using UserService.Domain.Entities;
 
 namespace UserService.Persistence.Repositories;
 
-public class RefreshTokenRepository : IRefreshTokenRepository
+public class RefreshTokenRepository: BaseRepository<RefreshToken>, IRefreshTokenRepository
 {
     private readonly UserServiceDbContext _context;
 
-    public RefreshTokenRepository(UserServiceDbContext context)
+    public RefreshTokenRepository(UserServiceDbContext context): base(context)
     {
         _context = context;
     }

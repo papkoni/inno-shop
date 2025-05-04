@@ -10,4 +10,16 @@
       <ProjectReference Include="..\UserService.Domain\UserService.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Handlers\Queries\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.11.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+      <PackageReference Include="Mapster" Version="7.4.0" />
+      <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
+    </ItemGroup>
+
 </Project>
