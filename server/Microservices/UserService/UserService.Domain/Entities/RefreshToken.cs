@@ -2,6 +2,8 @@ namespace UserService.Domain.Entities;
 
 public class RefreshToken
 {
+    protected RefreshToken() { }
+    
     public RefreshToken(
         string token, 
         int expiryDate,
@@ -14,9 +16,6 @@ public class RefreshToken
         UserId = userId;
         IsRevoked = false; 
     }
-    
-    protected RefreshToken() { }
-    
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
     public string Token { get; set; } = string.Empty;

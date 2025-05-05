@@ -16,8 +16,8 @@ public class DeactivateUserCommandHandler: IRequestHandler<DeactivateUserCommand
 
     public async Task<Unit> Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(request.Id, cancellationToken)
-                           ?? throw new NotFoundException($"User with id {request.Id} doesn't exists");
+        var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(Guid.Parse(request.UserIdClaim), cancellationToken)
+                           ?? throw new NotFoundException($"User with id {request.UserIdClaim} doesn't exists");
 
         existingUser.IsActive = request.IsActive;
         

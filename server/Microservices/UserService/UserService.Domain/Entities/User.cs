@@ -4,6 +4,8 @@ namespace UserService.Domain.Entities;
 
 public class User
 {
+    protected User(){}
+
     public User(
         string name,
         string passwordHash,
@@ -18,8 +20,6 @@ public class User
         Role = role;
         IsActive = isActive;
     }
-    
-    protected User(){}
     
     public Guid Id { get; set; }
     public string Name { get;  set; } = string.Empty;

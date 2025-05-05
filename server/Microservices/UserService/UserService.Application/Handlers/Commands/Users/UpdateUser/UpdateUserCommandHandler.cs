@@ -16,10 +16,20 @@ public class UpdateUserCommandHandler: IRequestHandler<UpdateUserCommand,Guid>
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<Guid> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(
+        UpdateUserCommand request, 
+        CancellationToken cancellationToken)
     {
-        var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(request.Id, cancellationToken)
-                              ?? throw new NotFoundException($"User with id {request.Id} doesn't exists");
+        if (request.UserIdClaim == null)
+        {
+            throw new UnauthorizedException("Unauthorized access");
+        }
+        
+        var existingUser = await _unitOfWork.UserRepository
+                               .GetByIdAsync(
+                                   Guid.Parse(request.UserIdClaim), 
+                                   cancellationToken) 
+                           ?? throw new NotFoundException($"User with id {request.UserIdClaim} doesn't exists");
 
         request.UpdateParameters.Adapt(existingUser);
         

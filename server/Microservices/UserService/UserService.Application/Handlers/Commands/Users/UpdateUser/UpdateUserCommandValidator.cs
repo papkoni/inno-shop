@@ -6,7 +6,7 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
     public UpdateUserCommandValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.UserIdClaim)
             .NotEmpty().WithMessage("User Id is required");
 
         RuleFor(x => x.UpdateParameters.Name)

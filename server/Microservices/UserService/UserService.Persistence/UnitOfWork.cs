@@ -18,7 +18,7 @@ public class UnitOfWork: IUnitOfWork
 
     public IUserRepository UserRepository { get; }
     public IRefreshTokenRepository RefreshTokenRepository { get; }
-        
+    
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);

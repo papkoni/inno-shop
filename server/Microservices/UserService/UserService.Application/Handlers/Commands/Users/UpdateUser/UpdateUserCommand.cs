@@ -4,5 +4,5 @@ using UserService.Application.DTOs;
 namespace UserService.Application.Handlers.Commands.Users.UpdateUser;
 
 public record UpdateUserCommand(
-    Guid Id, 
+    string? UserIdClaim, 
     UpdateUserDto UpdateParameters): IRequest<Guid>;
