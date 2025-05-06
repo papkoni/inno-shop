@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /app
+
+COPY ["server/UserService/UserService.Presentation/UserService.Presentation.csproj", "server/UserService/UserService.Presentation/"]
+COPY ["server/UserService/UserService.Persistence/UserService.Persistence.csproj", "server/UserService/UserService.Persistence/"]
+COPY ["server/UserService/UserService.Domain/UserService.Domain.csproj", "server/UserService/UserService.Domain/"]
+COPY ["server/UserService/UserService.Application/UserService.Application.csproj", "server/UserService/UserService.Application/"]
+COPY ["server/UserService/UserService.Infrastructure/UserService.Infrastructure.csproj", "server/UserService/UserService.Infrastructure/"]
+
+RUN dotnet restore "server/UserService/UserService.Presentation/UserService.Presentation.csproj"
+
+COPY . .
+
+RUN dotnet publish "server/UserService/UserService.Presentation/UserService.Presentation.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
+WORKDIR /app
+EXPOSE 7001
+
+RUN apk add --no-cache ca-certificates \
+    && update-ca-certificates
+
+COPY --from=build /app/publish . 
+
+ENV ASPNETCORE_URLS=http://+:7001
+
+ENTRYPOINT ["dotnet", "UserService.Presentation.dll"]

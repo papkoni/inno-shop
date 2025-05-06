@@ -21,7 +21,9 @@ public static class ServiceCollectionExtension
         services.AddDbContext<IUserServiceDbContext,UserServiceDbContext>(
             options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString(nameof(UserServiceDbContext)));
+                var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") 
+                       ?? configuration.GetConnectionString("UserServiceDbContext");
+                options.UseNpgsql(connectionString);
             }
         );
     }

@@ -1,0 +1,75 @@
+services:
+  user-postgres:
+    container_name: user-postgres
+    image: postgres:alpine
+    mem_limit: 512m
+    restart: unless-stopped
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: inno_users
+    volumes:
+      - user-postgres-data:/var/lib/postgresql/data
+        
+  product-postgres:
+    container_name: product-postgres
+    image: postgres:alpine
+    mem_limit: 512m
+    restart: unless-stopped
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: inno_products
+    volumes:
+      - product-postgres-data:/var/lib/postgresql/data
+  
+  user-service:
+    container_name: user-service
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: server/UsersDockerfile
+    ports:
+      - "7101:7001"
+    environment:
+      - APP_PORT=7001
+      - PRODUCTS_APP_PORT=7002
+      - ASPNETCORE_ENVIRONMENT=Production
+      - CONNECTION_STRING=Host=user-postgres;Port=5432;Database=inno_users;Username=postgres;Password=1;Timezone=Europe/Minsk;
+    depends_on:
+      - user-postgres
+
+  product-service:
+    container_name: product-service
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: server/ProductsDockerfile
+    ports:
+      - "7102:7002"
+    environment:
+      - APP_PORT=7002
+      - USERS_APP_PORT=7001
+      - ASPNETCORE_ENVIRONMENT=Production
+      - CONNECTION_STRING=Host=product-postgres;Port=5432;Database=inno_products;Username=postgres;Password=1;Timezone=Europe/Minsk;
+    depends_on:
+      - product-postgres
+  
+  api-gateway:
+    container_name: api-gateway
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ApiGateway/ApiGateway/Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+      - user-service
+      - product-service
+volumes:
+  user-postgres-data:
+  product-postgres-data:

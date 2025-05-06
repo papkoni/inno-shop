@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /app
+
+COPY ["server/ProductService/ProductService.Presentation/ProductService.Presentation.csproj", "server/ProductService/ProductService.Presentation/"]
+COPY ["server/ProductService/ProductService.Persistence/ProductService.Persistence.csproj", "server/ProductService/ProductService.Persistence/"]
+COPY ["server/ProductService/ProductService.Domain/ProductService.Domain.csproj", "server/ProductService/ProductService.Domain/"]
+COPY ["server/ProductService/ProductService.Application/ProductService.Application.csproj", "server/ProductService/ProductService.Application/"]
+
+RUN dotnet restore "server/ProductService/ProductService.Presentation/ProductService.Presentation.csproj"
+
+COPY . .
+
+RUN dotnet publish "server/ProductService/ProductService.Presentation/ProductService.Presentation.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
+WORKDIR /app
+EXPOSE 7002
+
+RUN apk add --no-cache ca-certificates \
+    && update-ca-certificates
+
+COPY --from=build /app/publish . 
+
+ENV ASPNETCORE_URLS=http://+:7002
+
+ENTRYPOINT ["dotnet", "ProductService.Presentation.dll"]
