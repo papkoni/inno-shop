@@ -16,12 +16,18 @@ public class DeactivateUserCommandHandler: IRequestHandler<DeactivateUserCommand
 
     public async Task<Unit> Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(request.UserIdClaim))
+        {
+            throw new UnauthorizedException("Unauthorized access");
+        }
+        
         var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(Guid.Parse(request.UserIdClaim), cancellationToken)
                            ?? throw new NotFoundException($"User with id {request.UserIdClaim} doesn't exists");
 
         existingUser.IsActive = request.IsActive;
         
         //TODO: обращению к сервису продуктов на софтдете продуктов
+        
         
         _unitOfWork.UserRepository.Update(existingUser);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -1,8 +1,6 @@
-using MapsterMapper;
 using MediatR;
-using ProductService.Application.Exceptions;
 using ProductService.Application.Interfaces.DB;
-using ProductService.Domain.Entities;
+using ProductService.Domain.Exceptions;
 
 namespace ProductService.Application.Handlers.Queries.Product.GetProductById;
 

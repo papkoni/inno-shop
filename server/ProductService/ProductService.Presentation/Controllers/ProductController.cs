@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Application.DTOs.Product;
@@ -22,23 +23,26 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] CreateProductDto request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await _mediator.Send(new CreateProductCommand(request, userIdClaim), cancellationToken);
         
         return Ok(result);
     }
     
-    [HttpGet("/user/{userId:guid}/filtered-products")]
+    [HttpGet("filtered-products")]
     public async Task<IActionResult> GetFilteredUserProducts(
-        Guid userId,
         [FromQuery] ProductFilterDto filter,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
         CancellationToken cancellationToken = default)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
         var query = new GetFilteredUserProductsQuery(
-            userId,
+            userIdClaim,
             filter,
             pageNumber,
             pageSize
@@ -48,10 +52,12 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("/user/{userId:guid}/products")]
-    public async Task<IActionResult> GetUserProducts(Guid userId, CancellationToken cancellationToken)
+    [HttpGet("products")]
+    public async Task<IActionResult> GetUserProducts(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetUserProductsQuery(userId), cancellationToken);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await _mediator.Send(new GetUserProductsQuery(userIdClaim), cancellationToken);
         
         return Ok(result);
     }
@@ -66,7 +72,6 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
-    //TODO: дто для всех кроме айди
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id, 

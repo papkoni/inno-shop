@@ -1,8 +1,6 @@
-using MapsterMapper;
 using MediatR;
-using ProductService.Application.Exceptions;
 using ProductService.Application.Interfaces.DB;
-using ProductService.Domain.Entities;
+using ProductService.Domain.Exceptions;
 
 namespace ProductService.Application.Handlers.Queries.Product.GetUserProducts;
 
@@ -21,10 +19,15 @@ public class GetUserProductsQueryHandler: IRequestHandler<GetUserProductsQuery, 
         GetUserProductsQuery request, 
         CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(request.UserIdClaim))
+        {
+            throw new UnauthorizedException("Unauthorized access");
+        }
+        
         var product = await _unitOfWork
                           .ProductRepository
                           .GetUserProductsAsync(
-                              request.CreatedByUserId,
+                              Guid.Parse(request.UserIdClaim),
                               cancellationToken); 
         
         return product;

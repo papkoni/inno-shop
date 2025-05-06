@@ -1,6 +1,7 @@
 using Mapster;
 using MediatR;
 using ProductService.Application.Interfaces.DB;
+using ProductService.Domain.Exceptions;
 
 namespace ProductService.Application.Handlers.Commands.Product.CreateProduct;
 
@@ -15,6 +16,11 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(request.UserIdClaim))
+        {
+            throw new UnauthorizedException("Unauthorized access");
+        }
+        
         var product = request.Adapt<Domain.Entities.Product>();
 
         await _unitOfWork.ProductRepository.CreateAsync(product, cancellationToken);

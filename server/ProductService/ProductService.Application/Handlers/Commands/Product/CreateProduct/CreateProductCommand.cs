@@ -1,9 +1,8 @@
 using MediatR;
+using ProductService.Application.DTOs.Product;
 
 namespace ProductService.Application.Handlers.Commands.Product.CreateProduct;
 
 public record CreateProductCommand(
-    string Title,
-    string Description,
-    decimal Price,
-    Guid CreatedByUserId): IRequest<Guid>;
+    CreateProductDto CreateParameters,
+    string? UserIdClaim): IRequest<Guid>;

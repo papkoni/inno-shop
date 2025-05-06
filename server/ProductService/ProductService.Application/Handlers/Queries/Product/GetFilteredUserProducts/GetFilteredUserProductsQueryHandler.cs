@@ -1,5 +1,6 @@
 using MediatR;
 using ProductService.Application.Interfaces.DB;
+using ProductService.Domain.Exceptions;
 
 namespace ProductService.Application.Handlers.Queries.Product.GetFilteredUserProducts;
 
@@ -18,10 +19,15 @@ public class GetFilteredUserProductsQueryHandler: IRequestHandler<GetFilteredUse
         GetFilteredUserProductsQuery request, 
         CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(request.UserIdClaim))
+        {
+            throw new UnauthorizedException("Unauthorized access");
+        }
+        
         var product = await _unitOfWork
                           .ProductRepository
                           .GetFilteredUserProductsAsync(
-                              request.CreatedByUserId,
+                              Guid.Parse(request.UserIdClaim),
                               request.Filter,
                               cancellationToken,
                               request.PageNumber,

@@ -20,7 +20,7 @@ public class UpdateUserCommandHandler: IRequestHandler<UpdateUserCommand,Guid>
         UpdateUserCommand request, 
         CancellationToken cancellationToken)
     {
-        if (request.UserIdClaim == null)
+        if (string.IsNullOrEmpty(request.UserIdClaim))
         {
             throw new UnauthorizedException("Unauthorized access");
         }

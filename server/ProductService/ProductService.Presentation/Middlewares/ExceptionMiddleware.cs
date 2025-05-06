@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ProductService.Application.Exceptions;
+using ProductService.Domain.Exceptions;
 
 namespace ProductService.Presentation.Middlewares;
 
@@ -33,6 +33,7 @@ public class ExceptionMiddleware
             {
                 BadRequestException => StatusCodes.Status400BadRequest,
                 NotFoundException => StatusCodes.Status404NotFound,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
                 _ => StatusCodes.Status500InternalServerError
             },
             Detail = ex.Message,

@@ -6,18 +6,15 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 {
     public CreateProductCommandValidator()
     {
-        RuleFor(x => x.Title)
+        RuleFor(x => x.CreateParameters.Title)
             .NotEmpty().WithMessage("Title is required")
             .MaximumLength(100).WithMessage("Title cannot exceed 100 characters");
 
-        RuleFor(x => x.Description)
+        RuleFor(x => x.CreateParameters.Description)
             .NotEmpty().WithMessage("Description is required")
             .MaximumLength(1000).WithMessage("Description cannot exceed 1000 characters");
 
-        RuleFor(x => x.Price)
+        RuleFor(x => x.CreateParameters.Price)
             .GreaterThan(0).WithMessage("Price must be greater than zero");
-
-        RuleFor(x => x.CreatedByUserId)
-            .NotEmpty().WithMessage("CreatedByUserId is required");
     }
 }

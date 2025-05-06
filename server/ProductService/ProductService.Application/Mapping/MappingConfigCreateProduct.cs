@@ -10,10 +10,10 @@ public class MappingConfigCreateProduct: IRegister
     {
         config.NewConfig<CreateProductCommand, Product>()
             .ConstructUsing(src => new Product(
-                src.Title,
-                src.Description,
-                src.Price,
-                src.CreatedByUserId,
+                src.CreateParameters.Title,
+                src.CreateParameters.Description,
+                src.CreateParameters.Price,
+                Guid.Parse(src.UserIdClaim),
                 true));
     }
 }
