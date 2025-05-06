@@ -28,15 +28,15 @@ public class LoginCommandHandler: IRequestHandler<LoginCommand, TokensDto>
     {
         var existingUser = await _unitOfWork.UserRepository.GetByEmailAsync(request.Email, cancellationToken)
                            ?? throw new NotFoundException($"User with email: {request.Email} doesn't exists");
-
-        var tokens = _jwtProvider.GenerateTokens(existingUser);
-        UpdateRefreshToken(existingUser, tokens.RefreshToken, _jwtProvider.GetRefreshTokenExpirationMinutes() );
-
+        
         var isPasswordValid = _passwordHasher.Verify(request.Password, existingUser.PasswordHash);
         if (!isPasswordValid)
         {
             throw new UnauthorizedException("Invalid password or email");
         }
+        
+        var tokens = _jwtProvider.GenerateTokens(existingUser);
+        UpdateRefreshToken(existingUser, tokens.RefreshToken, _jwtProvider.GetRefreshTokenExpirationMinutes() );
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
@@ -45,6 +45,11 @@ public class LoginCommandHandler: IRequestHandler<LoginCommand, TokensDto>
     
     private void UpdateRefreshToken(User user, string newToken, int expirationMinutes)
     {
+        if (user.RefreshToken == null)
+        {
+            throw new InvalidOperationException("RefreshToken must be initialized before update.");
+        }
+        
         user.RefreshToken.Token = newToken;
         user.RefreshToken.CreatedDate = DateTime.UtcNow;
         user.RefreshToken.ExpiryDate = DateTime.UtcNow.AddMinutes(expirationMinutes);
