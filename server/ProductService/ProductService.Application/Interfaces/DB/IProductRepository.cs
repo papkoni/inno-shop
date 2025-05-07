@@ -12,7 +12,7 @@ public interface IProductRepository: IBaseRepository<Product>
         Guid userId,
         CancellationToken cancellationToken);
 
-    Task<List<Product>?> GetFilteredUserProductsAsync(
+    Task<List<Product>> GetFilteredUserProductsAsync(
         Guid createdByUserId,
         ProductFilterDto filterDto,
         CancellationToken cancellationToken,

@@ -7,11 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="JWT.Extensions.DependencyInjection" Version="2.2.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.15" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 

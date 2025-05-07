@@ -9,20 +9,17 @@ namespace ProductService.Application.Handlers.Commands.Product.UpdateProduct;
 public class UpdateProductCommandHandler: IRequestHandler<UpdateProductCommand,Guid>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
 
     public UpdateProductCommandHandler(
-        IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _mapper = mapper;
     }
     
     public async Task<Guid> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var existingProduct = await _unitOfWork.ProductRepository.GetByIdAsync(request.Id, cancellationToken)
-                              ?? throw new NotFoundException($"Budget with id {request.Id} doesn't exists");
+                              ?? throw new NotFoundException($"Product with id {request.Id} doesn't exists");
 
         request.ParametersForUpdate.Adapt(existingProduct);
         

@@ -1,5 +1,6 @@
 using MediatR;
 using UserService.Application.Interfaces.DB;
+using UserService.Application.Interfaces.ProductService;
 using UserService.Domain.Exceptions;
 
 namespace UserService.Application.Handlers.Commands.Users.DeactivateUser;
@@ -7,11 +8,14 @@ namespace UserService.Application.Handlers.Commands.Users.DeactivateUser;
 public class DeactivateUserCommandHandler: IRequestHandler<DeactivateUserCommand, Unit>
 {
     private readonly IUnitOfWork _unitOfWork;
-
+    private readonly IProductServiceClient _productServiceClient;
+    
     public DeactivateUserCommandHandler(
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IProductServiceClient productServiceClient)
     {
         _unitOfWork = unitOfWork;
+        _productServiceClient = productServiceClient;
     }
 
     public async Task<Unit> Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
@@ -26,8 +30,7 @@ public class DeactivateUserCommandHandler: IRequestHandler<DeactivateUserCommand
 
         existingUser.IsActive = request.IsActive;
         
-        //TODO: обращению к сервису продуктов на софтдете продуктов
-        
+        await _productServiceClient.NotifyUserDeactivationAsync(Guid.Parse(request.UserIdClaim), cancellationToken);
         
         _unitOfWork.UserRepository.Update(existingUser);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

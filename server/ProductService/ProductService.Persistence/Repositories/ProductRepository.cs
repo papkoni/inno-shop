@@ -20,7 +20,7 @@ public class ProductRepository: BaseRepository<Product>, IProductRepository
     {
         return await _context.Products
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(p => p.Id == id && p.IsAvailable == true, cancellationToken);
     }
     
     public async Task<List<Product>> GetUserProductsAsync(
@@ -29,11 +29,11 @@ public class ProductRepository: BaseRepository<Product>, IProductRepository
     {
         return await _context.Products
             .AsNoTracking()
-            .Where(p => p.CreatedByUserId == userId)
+            .Where(p => p.CreatedByUserId == userId && p.IsAvailable == true)
             .ToListAsync(cancellationToken);
     }
     
-    public async Task<List<Product>?> GetFilteredUserProductsAsync(
+    public async Task<List<Product>> GetFilteredUserProductsAsync(
         Guid createdByUserId,
         ProductFilterDto filterDto, 
         CancellationToken cancellationToken,
@@ -53,7 +53,7 @@ public class ProductRepository: BaseRepository<Product>, IProductRepository
         
         return await query
             .AsNoTracking()
-            .Where(p => p.CreatedByUserId == createdByUserId)
+            .Where(p => p.CreatedByUserId == createdByUserId && p.IsAvailable == true)
             .OrderBy(p => p.Title)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

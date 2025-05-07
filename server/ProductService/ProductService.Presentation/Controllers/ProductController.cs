@@ -5,6 +5,7 @@ using ProductService.Application.DTOs.Product;
 using ProductService.Application.Handlers.Commands.Product.CreateProduct;
 using ProductService.Application.Handlers.Commands.Product.DeleteProduct;
 using ProductService.Application.Handlers.Commands.Product.UpdateProduct;
+using ProductService.Application.Handlers.Commands.Product.UpdateProductAvailability;
 using ProductService.Application.Handlers.Queries.Product.GetFilteredUserProducts;
 using ProductService.Application.Handlers.Queries.Product.GetProductById;
 using ProductService.Application.Handlers.Queries.Product.GetUserProducts;
@@ -47,7 +48,6 @@ public class ProductController : ControllerBase
             pageNumber,
             pageSize
         );
-
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
@@ -64,7 +64,7 @@ public class ProductController : ControllerBase
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-        Guid id,
+        [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetProductByIdQuery(id), cancellationToken);
@@ -85,9 +85,18 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
     
+    [HttpPatch("availability")]
+    public async Task<IActionResult> UpdateAvailability([FromBody] Guid userId, CancellationToken cancellationToken)
+    {
+        var command = new UpdateProductsAvailabilityCommand(userId);
+        await _mediator.Send(command);
+        
+        return NoContent();
+    }
+    
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
-        Guid id,
+        [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteProductCommand(id), cancellationToken);

@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
-builder.Services.AddPresentation();
+builder.Services.AddPresentation(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -35,9 +35,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.ApplyMigrations();
-
+app.UseRouting();
+app.UseAuthentication(); 
+app.UseAuthorization(); 
 app.MapControllers();
+
+app.ApplyMigrations();
 
 app.Run();
 
