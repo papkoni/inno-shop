@@ -21,9 +21,11 @@ public static class ServiceCollectionExtension
         
         services.AddHttpClient<IProductServiceClient, ProductServiceClient>(client => 
         {
-            var baseUrl = Environment.GetEnvironmentVariable("PRODUCTS_APP_PORT") 
-                          ?? configuration["ProductService:BaseUrl"];
-    
+            var port = Environment.GetEnvironmentVariable("PRODUCTS_APP_PORT");
+            var baseUrl = !string.IsNullOrEmpty(port)
+                ? $"http://product-service:{port}"
+                : configuration["ProductService:BaseUrl"];
+        
             client.BaseAddress = new Uri(baseUrl);
         });
     }

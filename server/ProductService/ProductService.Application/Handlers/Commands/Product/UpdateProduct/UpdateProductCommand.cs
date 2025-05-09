@@ -5,4 +5,4 @@ namespace ProductService.Application.Handlers.Commands.Product.UpdateProduct;
 
 public record UpdateProductCommand(
     Guid Id,
-    UpdateProductDto ParametersForUpdate): IRequest<Guid>;
+    UpdateProductDto UpdateParameters): IRequest<Guid>;

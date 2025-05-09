@@ -21,7 +21,7 @@ public class UpdateProductCommandHandler: IRequestHandler<UpdateProductCommand,G
         var existingProduct = await _unitOfWork.ProductRepository.GetByIdAsync(request.Id, cancellationToken)
                               ?? throw new NotFoundException($"Product with id {request.Id} doesn't exists");
 
-        request.ParametersForUpdate.Adapt(existingProduct);
+        request.UpdateParameters.Adapt(existingProduct);
         
         _unitOfWork.ProductRepository.Update(existingProduct);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

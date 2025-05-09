@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Application.DTOs.Product;
 using ProductService.Application.Handlers.Commands.Product.CreateProduct;
@@ -22,7 +23,8 @@ public class ProductController : ControllerBase
     {
         _mediator = mediator;
     }
-
+    
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateProductDto request, CancellationToken cancellationToken)
     {
@@ -33,6 +35,7 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
     
+    [Authorize]
     [HttpGet("filtered-products")]
     public async Task<IActionResult> GetFilteredUserProducts(
         [FromQuery] ProductFilterDto filter,
@@ -51,8 +54,9 @@ public class ProductController : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
-
-    [HttpGet("products")]
+    
+    [Authorize]
+    [HttpGet("user-products")]
     public async Task<IActionResult> GetUserProducts(CancellationToken cancellationToken)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -62,6 +66,7 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid id,
@@ -72,6 +77,7 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id, 
@@ -94,6 +100,7 @@ public class ProductController : ControllerBase
         return NoContent();
     }
     
+    [Authorize]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,

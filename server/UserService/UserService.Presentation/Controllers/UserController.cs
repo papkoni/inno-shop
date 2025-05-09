@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.DTOs;
 using UserService.Application.Handlers.Commands.Users.DeactivateUser;
@@ -10,6 +11,7 @@ namespace UserService.Presentation.Controllers;
 
 [ApiController]
 [Route("users")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -19,7 +21,6 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    //[Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetUserById(CancellationToken cancellationToken)
     {
@@ -30,7 +31,6 @@ public class UserController : ControllerBase
         return Ok(user);
     }
     
-    //[Authorize]
     [HttpPut("me")]
     public async Task<IActionResult> Update(UpdateUserDto updateParameters, CancellationToken cancellationToken)
     {
@@ -44,7 +44,6 @@ public class UserController : ControllerBase
         return Ok(user);
     }
     
-    //[Authorize]
     [HttpPut("me/status")]
     public async Task<IActionResult> UpdateStatus(CancellationToken cancellationToken)
     {

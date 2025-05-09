@@ -45,7 +45,13 @@
       "UpstreamHttpMethod": [ "PUT" ]
     },
 
-
+    {
+      "DownstreamPathTemplate": "/products/availability",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{ "Host": "product-service", "Port": 7002 }],
+      "UpstreamPathTemplate": "/products/availability",
+      "UpstreamHttpMethod": [ "PATCH" ]  
+    },
     {
       "DownstreamPathTemplate": "/products",
       "DownstreamScheme": "http",
@@ -54,17 +60,17 @@
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
-      "DownstreamPathTemplate": "/products/user/{userId}/filtered-products",
+      "DownstreamPathTemplate": "/products/filtered-products",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{ "Host": "product-service", "Port": 7002 }],
-      "UpstreamPathTemplate": "/products/user/{userId}/filtered-products",
+      "UpstreamPathTemplate": "/products/filtered-products",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/products/user/{userId}/products",
+      "DownstreamPathTemplate": "/products/user-products",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{ "Host": "product-service", "Port": 7002 }],
-      "UpstreamPathTemplate": "/products/user/{userId}/products",
+      "UpstreamPathTemplate": "/products/user-products",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
@@ -77,6 +83,6 @@
   ],
 
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:800"
+    "BaseUrl": "http://localhost:8001"
   }
 }

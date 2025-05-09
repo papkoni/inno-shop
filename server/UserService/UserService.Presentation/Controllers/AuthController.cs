@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.Handlers.Commands.Auth.Login;
 using UserService.Application.Handlers.Commands.Auth.RefreshTokens;
@@ -19,7 +20,7 @@ public class AuthController: ControllerBase
         _mediator = mediator;
     }
     
-    [HttpPost("/register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserRegistrationCommand request, CancellationToken cancellationToken)
     {
         var context = HttpContext;
@@ -31,7 +32,7 @@ public class AuthController: ControllerBase
         return Ok(tokens.AccessToken);
     }
     
-    [HttpPost("/logout")]
+    [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
         Response.Cookies.Delete("secretCookie");
@@ -43,7 +44,7 @@ public class AuthController: ControllerBase
         return NoContent();
     }
 
-    [HttpPost("/login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginCommand request, CancellationToken cancellationToken)
     {
         var context = HttpContext;
@@ -55,7 +56,7 @@ public class AuthController: ControllerBase
         return Ok(tokens.AccessToken);
     }
     
-    [HttpPost("/refresh")]
+    [HttpPost("refresh")]
     public async Task<ActionResult<string>> RefreshTokens(CancellationToken cancellationToken)
     {
         var refreshToken = Request.Cookies["secretCookie"];

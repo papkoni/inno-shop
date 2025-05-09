@@ -17,7 +17,7 @@ public class DeleteProductCommandHandler: IRequestHandler<DeleteProductCommand,U
     public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
         var existingProduct = await _unitOfWork.ProductRepository.GetByIdAsync(request.Id, cancellationToken)
-                                     ?? throw new NotFoundException($"Pruduct with id {request.Id} doesn't exists");
+                                     ?? throw new NotFoundException($"Product with id {request.Id} doesn't exists");
 
         _unitOfWork.ProductRepository.Delete(existingProduct);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
