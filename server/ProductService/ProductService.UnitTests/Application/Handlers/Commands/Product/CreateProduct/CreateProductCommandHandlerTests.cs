@@ -22,7 +22,6 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.CreateP
 
         public CreateProductCommandHandlerTests()
         {
-            // Создаем отдельный экземпляр конфигурации для тестов
             _config = new TypeAdapterConfig();
             _config.ForType<CreateProductCommand, Domain.Entities.Product>()
                 .ConstructUsing(src => new Domain.Entities.Product(
@@ -32,15 +31,12 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.CreateP
                     Guid.Parse(src.UserIdClaim),
                     true));
 
-            // Мокаем репозиторий и UnitOfWork
             _mockProductRepository = new Mock<IProductRepository>();
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockUnitOfWork.Setup(uow => uow.ProductRepository).Returns(_mockProductRepository.Object);
             
-            // В конструктор хэндлера передаем мок UnitOfWork
             _handler = new CreateProductCommandHandler(_mockUnitOfWork.Object);
             
-            // Заменяем метод Adapt в хэндлере на наш тестовый мок
             var handlerType = _handler.GetType();
             var fieldInfo = handlerType.GetField("_unitOfWork", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (fieldInfo != null)
@@ -57,7 +53,6 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.CreateP
             var dto = new CreateProductDto("Test Product", "Test Description", 100m);
             var command = new CreateProductCommand(dto, userId);
     
-            // Настройка Mapster
             TypeAdapterConfig<CreateProductCommand, Domain.Entities.Product>
                 .NewConfig()
                 .ConstructUsing(src => new Domain.Entities.Product(src.CreateParameters.Title, src.CreateParameters.Description, src.CreateParameters.Price, Guid.Parse(src.UserIdClaim), true

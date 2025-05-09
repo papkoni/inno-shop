@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Mapster;
 using Moq;
@@ -10,9 +7,8 @@ using UserService.Application.Interfaces.DB;
 using UserService.Domain.Entities;
 using UserService.Domain.Enums;
 using UserService.Domain.Exceptions;
-using Xunit;
 
-namespace UserService.UnitTests.Application.Handlers.Queries.Users.GetUserById
+namespace UserService.UnitTests.Application.Queries.Users.GetUserById
 {
     public class GetUserByIdQueryHandlerTests
     {
@@ -23,7 +19,6 @@ namespace UserService.UnitTests.Application.Handlers.Queries.Users.GetUserById
 
         public GetUserByIdQueryHandlerTests()
         {
-            // Создаем отдельный экземпляр конфигурации для тестов
             _config = new TypeAdapterConfig();
             _config.ForType<User, UserByIdResponse>()
                 .Map(dest => dest.Id, src => src.Id)
@@ -31,7 +26,6 @@ namespace UserService.UnitTests.Application.Handlers.Queries.Users.GetUserById
                 .Map(dest => dest.Name, src => src.Name)
                 .Map(dest => dest.Role, src => src.Role.ToString());
             
-            // Регистрируем конфигурацию
             var mappingRegister = new MapsterRegister();
             TypeAdapterConfig.GlobalSettings.Apply(mappingRegister);
 
@@ -104,7 +98,6 @@ namespace UserService.UnitTests.Application.Handlers.Queries.Users.GetUserById
         }
     }
 
-    // Класс для регистрации маппинга
     public class MapsterRegister : IRegister
     {
         public void Register(TypeAdapterConfig config)

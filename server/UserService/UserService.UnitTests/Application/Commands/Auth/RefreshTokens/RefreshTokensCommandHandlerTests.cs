@@ -7,7 +7,6 @@ using UserService.Application.Interfaces.DB;
 using UserService.Application.Interfaces.Security;
 using UserService.Domain.Entities;
 using UserService.Domain.Exceptions;
-using Xunit;
 
 namespace UserService.UnitTests.Application.Commands.Auth.RefreshTokens;
 
@@ -15,19 +14,16 @@ public class RefreshTokensCommandHandlerTests
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IJwtProvider> _jwtProviderMock;
-    private readonly Mock<IPasswordHasher> _passwordHasherMock;
     private readonly RefreshTokensCommandHandler _handler;
 
     public RefreshTokensCommandHandlerTests()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _jwtProviderMock = new Mock<IJwtProvider>();
-        _passwordHasherMock = new Mock<IPasswordHasher>();
         
         _handler = new RefreshTokensCommandHandler(
             _unitOfWorkMock.Object,
-            _jwtProviderMock.Object,
-            _passwordHasherMock.Object
+            _jwtProviderMock.Object
         );
     }
 

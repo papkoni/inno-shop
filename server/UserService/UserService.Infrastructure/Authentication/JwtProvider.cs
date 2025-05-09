@@ -46,9 +46,11 @@ public class JwtProvider : IJwtProvider
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
         };
 
         return GenerateJwtToken(claims, _options.RefreshTokenExpiresMinutes);
+        
     }
     
     public int GetRefreshTokenExpirationMinutes()

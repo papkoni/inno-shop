@@ -12,16 +12,13 @@ public class RefreshTokensCommandHandler: IRequestHandler<RefreshTokensCommand, 
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtProvider _jwtProvider;
-    private readonly IPasswordHasher _passwordHasher;
     
     public RefreshTokensCommandHandler(
         IUnitOfWork unitOfWork,
-        IJwtProvider jwtProvider,
-        IPasswordHasher passwordHasher)
+        IJwtProvider jwtProvider)
     {
         _unitOfWork = unitOfWork;
         _jwtProvider = jwtProvider;
-        _passwordHasher = passwordHasher;
     }
 
     public async Task<TokensDto> Handle(RefreshTokensCommand request, CancellationToken cancellationToken)

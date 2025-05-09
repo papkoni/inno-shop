@@ -49,7 +49,6 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.UpdateP
             // Assert
             Assert.Equal(Unit.Value, result);
             
-            // Убедимся, что доступность всех продуктов изменена на false
             foreach (var product in products)
             {
                 Assert.False(product.IsAvailable);

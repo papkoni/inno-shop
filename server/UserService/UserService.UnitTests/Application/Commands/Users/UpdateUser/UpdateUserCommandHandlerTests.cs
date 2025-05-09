@@ -30,7 +30,8 @@ public class UpdateUserCommandHandlerTests
             new UpdateUserDto
             (
                 "Updated Name",
-                "updated@example.com"
+                "updated@example.com",
+                null
             )
         );
 
@@ -63,7 +64,8 @@ public class UpdateUserCommandHandlerTests
             new UpdateUserDto
             (
                 "Updated Name",
-                "updated@example.com"
+                "updated@example.com",
+                null
             )
         );
 

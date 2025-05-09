@@ -44,3 +44,4 @@ app.ApplyMigrations();
 
 app.Run();
 
+public partial class Program {}

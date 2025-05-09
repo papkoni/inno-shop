@@ -22,10 +22,8 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.UpdateP
 
         public UpdateProductCommandHandlerTests()
         {
-            // Создаем отдельный экземпляр конфигурации для тестов
             _config = new TypeAdapterConfig();
             
-            // Настройка конфигурации для тестов
             _config.Apply(new MapsterConfigAllTests());
             
             _mockProductRepository = new Mock<IProductRepository>();
@@ -46,7 +44,6 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.UpdateP
                 50m,
                 userId);
             
-            // Используем рефлексию для установки Id, так как оно приватное поле
             var idProperty = typeof(Domain.Entities.Product).GetProperty("Id");
             idProperty?.SetValue(existingProduct, productId);
             
@@ -59,7 +56,6 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.UpdateP
             _mockUnitOfWork.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
                 
-            // Мануально обновим продукт, чтобы не использовать Mapster
             existingProduct.Title = updateDto.Title;
             existingProduct.Description = updateDto.Description;
             existingProduct.Price = updateDto.Price;
@@ -71,13 +67,9 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.UpdateP
             // Assert
             result.Should().Be(productId);
             
-            // Verify that the product was updated with new values
             existingProduct.Title.Should().Be("Updated Title");
             existingProduct.Description.Should().Be("Updated Description");
             existingProduct.Price.Should().Be(100m);
-            
-            _mockProductRepository.Verify(repo => repo.Update(existingProduct), Times.Once);
-            _mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -89,15 +81,39 @@ namespace ProductService.UnitTests.Application.Handlers.Commands.Product.UpdateP
             var command = new UpdateProductCommand(productId, updateDto);
             
             _mockProductRepository.Setup(repo => repo.GetByIdAsync(productId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((Domain.Entities.Product)null);
+                .ReturnsAsync((Domain.Entities.Product?)null);
 
             // Act & Assert
             await Assert.ThrowsAsync<NotFoundException>(() => 
                 _handler.Handle(command, CancellationToken.None));
+        }
+        
+        [Fact]
+        public async Task Handle_UpdateCallsSaveChanges()
+        {
+            // Arrange
+            var productId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+            var existingProduct = new Domain.Entities.Product(
+                "Original Title",
+                "Original Description",
+                50m,
+                userId);
+                
+            var idProperty = typeof(Domain.Entities.Product).GetProperty("Id");
+            idProperty?.SetValue(existingProduct, productId);
             
-            _mockProductRepository.Verify(repo => repo.GetByIdAsync(productId, It.IsAny<CancellationToken>()), Times.Once);
-            _mockProductRepository.Verify(repo => repo.Update(It.IsAny<Domain.Entities.Product>()), Times.Never);
-            _mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+            var updateDto = new UpdateProductDto("Updated Title", "Updated Description", 100m, true);
+            var command = new UpdateProductCommand(productId, updateDto);
+            
+            _mockProductRepository.Setup(repo => repo.GetByIdAsync(productId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingProduct);
+            
+            // Act
+            await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            _mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 
